@@ -2,38 +2,89 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pago Exitoso</title>
-  <meta http-equiv="refresh" content="4; url=http://localhost:3000/" />
+  <title>Resultado del Pago</title>
   <style>
     body {
-      background-color: #d8b4f8; /* Lila */
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      text-align: center;
-      padding: 100px 20px;
+      margin: 0;
+      padding: 0;
+      background: #e8d4f5;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       color: #333;
     }
 
-    .check-icon {
-      font-size: 120px;
-      color: #28a745;
+    .container {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .icon {
+      font-size: 72px;
       margin-bottom: 20px;
     }
 
-    h1 {
-      font-size: 32px;
+    .icon.approved {
+      color: #4CAF50;
+    }
+
+    .icon.pending {
+      color: #FFC107;
+    }
+
+    .icon.rejected {
+      color: #F44336;
+    }
+
+    .status-text {
+      font-size: 24px;
+      font-weight: bold;
       margin-bottom: 10px;
     }
 
-    p {
-      font-size: 18px;
+    .payment-id {
+      font-size: 14px;
+      color: #777;
     }
   </style>
 </head>
 <body>
-  <div class="check-icon">✔️</div>
-  <h1>Muchas gracias por comprarnos</h1>
-  <p>Desde <strong>Alquimia</strong> estamos agradecidos por tu compra.</p>
-  <p>Serás redirigido automáticamente en unos segundos...</p>
+  <div class="container" id="resultado"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("status");
+    const paymentId = params.get("payment_id");
+    const collectionId = params.get("collection_id");
+
+    const resultado = document.getElementById("resultado");
+
+    if (status === "approved") {
+      resultado.innerHTML = `
+        <div class="icon approved">✔️</div>
+        <div class="status-text">¡Pago aprobado!</div>
+        <div class="payment-id">ID del pago: ${paymentId || collectionId}</div>
+      `;
+    } else if (status === "pending") {
+      resultado.innerHTML = `
+        <div class="icon pending">⏳</div>
+        <div class="status-text">Pago pendiente</div>
+        <div class="payment-id">Estamos procesando tu pago.</div>
+      `;
+    } else {
+      resultado.innerHTML = `
+        <div class="icon rejected">❌</div>
+        <div class="status-text">Pago rechazado o cancelado</div>
+        <div class="payment-id">Por favor intentá nuevamente.</div>
+      `;
+    }
+  </script>
 </body>
 </html>
